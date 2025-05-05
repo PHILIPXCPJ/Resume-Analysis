@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Results</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.6; 
+            margin: 0;
+            padding: 20px;
+            background-color: blueviolet; /* Light blue background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 90%;
+            max-width: 900px;
+            margin: 20px 0;
+        }
+        h1 { 
+            color: #2c3e50; 
+            border-bottom: 2px solid #3498db; 
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 { 
+            color: #3498db; 
+            margin-top: 25px; 
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        .section { 
+            margin-bottom: 30px; 
+        }
+        .contact-info { 
+            background: #f0f8ff; /* Light blue background for contact */
+            padding: 15px; 
+            border-radius: 5px;
+            border: 1px solid #d1e7ff;
+        }
+        .contact-item { 
+            margin: 5px 0; 
+        }
+        .experience-item, .education-item { 
+            margin-bottom: 15px; 
+            padding-bottom: 15px; 
+            border-bottom: 1px solid #e1e1e1; 
+        }
+        .position { 
+            font-weight: bold; 
+            color: #2c3e50; 
+        }
+        .dates { 
+            color: #7f8c8d; 
+            font-style: italic; 
+        }
+        .skills-category { 
+            margin-top: 10px; 
+        }
+        .skill-item { 
+            display: inline-block; 
+            background: #d4e6ff; 
+            padding: 5px 10px; 
+            margin: 3px; 
+            border-radius: 3px; 
+            color: #2c3e50;
+        }
+        pre { 
+            white-space: pre-wrap; 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 5px; 
+            overflow-x: auto;
+            border: 1px solid #e1e1e1;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resume Analysis Results</h1>
+        <a href="/" class="back-link">← Upload another resume</a>
+        
+        <div class="section">
+            <h2>👤 Contact Information</h2>
+            <div class="contact-info">
+                <div class="contact-item"><strong>Name:</strong> {{ results.contact.name }}</div>
+                <div class="contact-item"><strong>Email:</strong> {{ results.contact.emails|join(', ') or 'Not found' }}</div>
+                <div class="contact-item"><strong>Phone:</strong> {{ results.contact.phones|join(', ') or 'Not found' }}</div>
+                {% if results.contact.location %}
+                <div class="contact-item"><strong>Location:</strong> {{ results.contact.location }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>💼 Work Experience</h2>
+            {% for exp in results.experience %}
+            <div class="experience-item">
+                {% if exp.position %}<div class="position">{{ exp.position }}</div>{% endif %}
+                {% if exp.company %}<div class="company">{{ exp.company }}</div>{% endif %}
+                {% if exp.dates %}<div class="dates">{{ exp.dates }}</div>{% endif %}
+                {% if exp.description %}<div class="description">{{ exp.description }}</div>{% endif %}
+            </div>
+            {% else %}
+            <p>No work experience found</p>
+            {% endfor %}
+        </div>
+        
+        <div class="section">
+            <h2>🎓 Education</h2>
+            {% for edu in results.education %}
+            <div class="education-item">
+                <div><strong>{{ edu.institution }}</strong></div>
+                {% if edu.degree %}<div>{{ edu.degree }}</div>{% endif %}
+                {% if edu.year %}<div class="dates">{{ edu.year }}</div>{% endif %}
+            </div>
+            {% else %}
+            <p>No education information found</p>
+            {% endfor %}
+        </div>
+        
+        <div class="section">
+            <h2>🛠️ Skills</h2>
+            {% for category, skills in results.skills.items() %}
+                {% if skills %}
+                <div class="skills-category">
+                    <h3>{{ category|title }}</h3>
+                    {% for skill in skills %}
+                        <span class="skill-item">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div class="section">
+            <h2>📄 Detected Sections</h2>
+            <ul>
+                {% for section in results.sections %}
+                    <li>{{ section }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>🔍 Text Preview</h2>
+            <pre>{{ results.raw_text }}</pre>
+        </div>
+    </div>
+</body>
+</html>
